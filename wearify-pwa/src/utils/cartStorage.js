@@ -1,3 +1,336 @@
+// // const CART_KEY = 'wearify_cart';
+
+// // /**
+// //  * Get cart from localStorage
+// //  */
+// // export const getCart = () => {
+// //     try {
+// //         const cart = localStorage.getItem(CART_KEY);
+// //         return cart ? JSON.parse(cart) : [];
+// //     } catch (error) {
+// //         console.error('Error getting cart:', error);
+// //         return [];
+// //     }
+// // };
+
+// // /**
+// //  * Save cart to localStorage
+// //  */
+// // export const saveCart = (cart) => {
+// //     try {
+// //         localStorage.setItem(CART_KEY, JSON.stringify(cart));
+// //         return true;
+// //     } catch (error) {
+// //         console.error('Error saving cart:', error);
+// //         return false;
+// //     }
+// // };
+
+// // /**
+// //  * Add item to cart
+// //  */
+// // export const addToCart = (product, quantity = 1, size = null, color = null) => {
+// //     try {
+// //         const cart = getCart();
+
+// //         // Check if product already exists in cart with same size and color
+// //         const existingIndex = cart.findIndex(
+// //             item => item.id === product.id && item.size === size && item.color === color
+// //         );
+
+// //         if (existingIndex > -1) {
+// //             // Update quantity if exists
+// //             cart[existingIndex].quantity += quantity;
+// //         } else {
+// //             // Add new item
+// //             cart.push({
+// //                 id: product.id,
+// //                 name: product.name,
+// //                 price: product.price,
+// //                 image_url: product.image_url,
+// //                 quantity,
+// //                 size: size || product.size,
+// //                 color: color || product.color,
+// //                 stock: product.stock,
+// //             });
+// //         }
+
+// //         saveCart(cart);
+// //         return { success: true, cart };
+// //     } catch (error) {
+// //         console.error('Error adding to cart:', error);
+// //         return { success: false, message: error.message };
+// //     }
+// // };
+
+// // /**
+// //  * Update cart item quantity
+// //  */
+// // export const updateCartItemQuantity = (productId, size, color, quantity) => {
+// //     try {
+// //         const cart = getCart();
+// //         const index = cart.findIndex(
+// //             item => item.id === productId && item.size === size && item.color === color
+// //         );
+
+// //         if (index > -1) {
+// //             if (quantity <= 0) {
+// //                 // Remove item if quantity is 0 or negative
+// //                 cart.splice(index, 1);
+// //             } else {
+// //                 // Update quantity
+// //                 cart[index].quantity = quantity;
+// //             }
+// //             saveCart(cart);
+// //             return { success: true, cart };
+// //         }
+
+// //         return { success: false, message: 'Item not found in cart' };
+// //     } catch (error) {
+// //         console.error('Error updating cart item:', error);
+// //         return { success: false, message: error.message };
+// //     }
+// // };
+
+// // /**
+// //  * Remove item from cart
+// //  */
+// // export const removeFromCart = (productId, size, color) => {
+// //     try {
+// //         const cart = getCart();
+// //         const filteredCart = cart.filter(
+// //             item => !(item.id === productId && item.size === size && item.color === color)
+// //         );
+// //         saveCart(filteredCart);
+// //         return { success: true, cart: filteredCart };
+// //     } catch (error) {
+// //         console.error('Error removing from cart:', error);
+// //         return { success: false, message: error.message };
+// //     }
+// // };
+
+// // /**
+// //  * Clear cart
+// //  */
+// // export const clearCart = () => {
+// //     try {
+// //         localStorage.removeItem(CART_KEY);
+// //         return { success: true };
+// //     } catch (error) {
+// //         console.error('Error clearing cart:', error);
+// //         return { success: false, message: error.message };
+// //     }
+// // };
+
+// // /**
+// //  * Get cart total
+// //  */
+// // export const getCartTotal = () => {
+// //     const cart = getCart();
+// //     return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+// // };
+
+// // /**
+// //  * Get cart item count
+// //  */
+// // export const getCartItemCount = () => {
+// //     const cart = getCart();
+// //     return cart.reduce((count, item) => count + item.quantity, 0);
+// // };
+
+// // export default {
+// //     getCart,
+// //     saveCart,
+// //     addToCart,
+// //     updateCartItemQuantity,
+// //     removeFromCart,
+// //     clearCart,
+// //     getCartTotal,
+// //     getCartItemCount,
+// // };
+
+// // src/utils/cartStorage.js - FIXED IMAGE HANDLING
+// const CART_KEY = 'wearify_cart';
+
+// /**
+//  * Get cart from localStorage
+//  * @returns {Array} Cart items
+//  */
+// export const getCart = () => {
+//     try {
+//         const cart = localStorage.getItem(CART_KEY);
+//         return cart ? JSON.parse(cart) : [];
+//     } catch (error) {
+//         console.error('Error reading cart:', error);
+//         return [];
+//     }
+// };
+
+// /**
+//  * Save cart to localStorage
+//  * @param {Array} cart - Cart items
+//  */
+// export const saveCart = (cart) => {
+//     try {
+//         localStorage.setItem(CART_KEY, JSON.stringify(cart));
+//         return { success: true };
+//     } catch (error) {
+//         console.error('Error saving cart:', error);
+//         return { success: false, message: 'Failed to save cart' };
+//     }
+// };
+
+// /**
+//  * Add item to cart with proper image handling
+//  * @param {Object} product - Product to add
+//  * @param {Number} quantity - Quantity to add
+//  * @param {String} size - Selected size
+//  * @param {String} color - Selected color
+//  */
+// export const addToCart = (product, quantity = 1, size = null, color = null) => {
+//     try {
+//         const cart = getCart();
+
+//         // FIXED: Ensure image is included
+//         const productImage = product.image_url || product.image || 'https://via.placeholder.com/400?text=No+Image';
+
+//         // Check if product with same variant already exists
+//         const existingItemIndex = cart.findIndex(
+//             item => item.id === product.id && item.size === size && item.color === color
+//         );
+
+//         if (existingItemIndex > -1) {
+//             // Update quantity if item exists
+//             cart[existingItemIndex].quantity += quantity;
+
+//             // Make sure stock limit is respected
+//             if (cart[existingItemIndex].quantity > product.stock) {
+//                 cart[existingItemIndex].quantity = product.stock;
+//             }
+//         } else {
+//             // Add new item with complete product info including image
+//             cart.push({
+//                 id: product.id,
+//                 name: product.name,
+//                 price: product.price,
+//                 // FIXED: Store both image fields for compatibility
+//                 image: productImage,
+//                 image_url: productImage,
+//                 brand: product.brands?.name || product.brand || 'Brand',
+//                 category: product.categories?.name || product.category || 'Category',
+//                 stock: product.stock,
+//                 quantity: Math.min(quantity, product.stock),
+//                 size: size,
+//                 color: color,
+//                 gender: product.gender
+//             });
+//         }
+
+//         const result = saveCart(cart);
+//         return { ...result, success: true, message: 'Product added to cart' };
+//     } catch (error) {
+//         console.error('Error adding to cart:', error);
+//         return { success: false, message: 'Failed to add product to cart' };
+//     }
+// };
+
+// /**
+//  * Update cart item quantity
+//  */
+// export const updateCartItemQuantity = (productId, size, color, quantity) => {
+//     try {
+//         const cart = getCart();
+//         const itemIndex = cart.findIndex(
+//             item => item.id === productId && item.size === size && item.color === color
+//         );
+
+//         if (itemIndex === -1) {
+//             return { success: false, message: 'Item not found in cart' };
+//         }
+
+//         if (quantity <= 0) {
+//             return removeFromCart(productId, size, color);
+//         }
+
+//         // Update quantity (respect stock limit)
+//         cart[itemIndex].quantity = Math.min(quantity, cart[itemIndex].stock);
+
+//         const result = saveCart(cart);
+//         return { ...result, message: 'Quantity updated' };
+//     } catch (error) {
+//         console.error('Error updating cart quantity:', error);
+//         return { success: false, message: 'Failed to update quantity' };
+//     }
+// };
+
+// /**
+//  * Remove item from cart
+//  */
+// export const removeFromCart = (productId, size, color) => {
+//     try {
+//         const cart = getCart();
+//         const updatedCart = cart.filter(
+//             item => !(item.id === productId && item.size === size && item.color === color)
+//         );
+
+//         const result = saveCart(updatedCart);
+//         return { ...result, message: 'Item removed from cart' };
+//     } catch (error) {
+//         console.error('Error removing from cart:', error);
+//         return { success: false, message: 'Failed to remove item' };
+//     }
+// };
+
+// /**
+//  * Clear entire cart
+//  */
+// export const clearCart = () => {
+//     try {
+//         localStorage.removeItem(CART_KEY);
+//         return { success: true, message: 'Cart cleared' };
+//     } catch (error) {
+//         console.error('Error clearing cart:', error);
+//         return { success: false, message: 'Failed to clear cart' };
+//     }
+// };
+
+// /**
+//  * Get cart total
+//  */
+// export const getCartTotal = () => {
+//     const cart = getCart();
+//     return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+// };
+
+// /**
+//  * Get cart item count
+//  */
+// export const getCartItemCount = () => {
+//     const cart = getCart();
+//     return cart.reduce((count, item) => count + item.quantity, 0);
+// };
+
+// /**
+//  * Check if product is in cart
+//  */
+// export const isInCart = (productId, size = null, color = null) => {
+//     const cart = getCart();
+//     return cart.some(
+//         item => item.id === productId && item.size === size && item.color === color
+//     );
+// };
+
+// /**
+//  * Get specific cart item
+//  */
+// export const getCartItem = (productId, size = null, color = null) => {
+//     const cart = getCart();
+//     return cart.find(
+//         item => item.id === productId && item.size === size && item.color === color
+//     );
+// };
+
+// src/utils/cartStorage.js - FIXED PRICE STORAGE
 const CART_KEY = 'wearify_cart';
 
 /**
@@ -8,7 +341,7 @@ export const getCart = () => {
         const cart = localStorage.getItem(CART_KEY);
         return cart ? JSON.parse(cart) : [];
     } catch (error) {
-        console.error('Error getting cart:', error);
+        console.error('Error reading cart:', error);
         return [];
     }
 };
@@ -19,47 +352,76 @@ export const getCart = () => {
 export const saveCart = (cart) => {
     try {
         localStorage.setItem(CART_KEY, JSON.stringify(cart));
-        return true;
+        return { success: true };
     } catch (error) {
         console.error('Error saving cart:', error);
-        return false;
+        return { success: false, message: 'Failed to save cart' };
     }
 };
 
 /**
- * Add item to cart
+ * Add item to cart - FIXED: Proper price storage
  */
 export const addToCart = (product, quantity = 1, size = null, color = null) => {
     try {
         const cart = getCart();
 
-        // Check if product already exists in cart with same size and color
-        const existingIndex = cart.findIndex(
+        // FIXED: Ensure image is included
+        const productImage = product.image_url || product.image || 'https://via.placeholder.com/400?text=No+Image';
+
+        // CRITICAL FIX: Convert price to number and validate
+        const productPrice = Number(product.price) || 0;
+
+        if (productPrice === 0) {
+            console.warn('⚠️ Product price is 0 or invalid:', product);
+        }
+
+        // Check if product with same variant already exists
+        const existingItemIndex = cart.findIndex(
             item => item.id === product.id && item.size === size && item.color === color
         );
 
-        if (existingIndex > -1) {
-            // Update quantity if exists
-            cart[existingIndex].quantity += quantity;
+        if (existingItemIndex > -1) {
+            // Update quantity if item exists
+            cart[existingItemIndex].quantity += quantity;
+
+            // Make sure stock limit is respected
+            if (cart[existingItemIndex].quantity > product.stock) {
+                cart[existingItemIndex].quantity = product.stock;
+            }
         } else {
-            // Add new item
+            // Add new item with COMPLETE product info
             cart.push({
                 id: product.id,
-                name: product.name,
-                price: product.price,
-                image_url: product.image_url,
-                quantity,
-                size: size || product.size,
-                color: color || product.color,
-                stock: product.stock,
+                name: product.name || 'Unknown Product',
+                price: productPrice, // FIXED: Store as number
+                // FIXED: Store both image fields for compatibility
+                image: productImage,
+                image_url: productImage,
+                brand: product.brands?.name || product.brand || 'Brand',
+                category: product.categories?.name || product.category || 'Category',
+                stock: Number(product.stock) || 0,
+                quantity: Math.min(quantity, product.stock),
+                size: size,
+                color: color,
+                gender: product.gender || 'unisex'
             });
         }
 
-        saveCart(cart);
-        return { success: true, cart };
+        const result = saveCart(cart);
+
+        // Debug log
+        console.log('✅ Added to cart:', {
+            name: product.name,
+            price: productPrice,
+            quantity: quantity,
+            total: productPrice * quantity
+        });
+
+        return { ...result, success: true, message: 'Product added to cart' };
     } catch (error) {
         console.error('Error adding to cart:', error);
-        return { success: false, message: error.message };
+        return { success: false, message: 'Failed to add product to cart' };
     }
 };
 
@@ -69,26 +431,26 @@ export const addToCart = (product, quantity = 1, size = null, color = null) => {
 export const updateCartItemQuantity = (productId, size, color, quantity) => {
     try {
         const cart = getCart();
-        const index = cart.findIndex(
+        const itemIndex = cart.findIndex(
             item => item.id === productId && item.size === size && item.color === color
         );
 
-        if (index > -1) {
-            if (quantity <= 0) {
-                // Remove item if quantity is 0 or negative
-                cart.splice(index, 1);
-            } else {
-                // Update quantity
-                cart[index].quantity = quantity;
-            }
-            saveCart(cart);
-            return { success: true, cart };
+        if (itemIndex === -1) {
+            return { success: false, message: 'Item not found in cart' };
         }
 
-        return { success: false, message: 'Item not found in cart' };
+        if (quantity <= 0) {
+            return removeFromCart(productId, size, color);
+        }
+
+        // Update quantity (respect stock limit)
+        cart[itemIndex].quantity = Math.min(quantity, cart[itemIndex].stock);
+
+        const result = saveCart(cart);
+        return { ...result, message: 'Quantity updated' };
     } catch (error) {
-        console.error('Error updating cart item:', error);
-        return { success: false, message: error.message };
+        console.error('Error updating cart quantity:', error);
+        return { success: false, message: 'Failed to update quantity' };
     }
 };
 
@@ -98,36 +460,41 @@ export const updateCartItemQuantity = (productId, size, color, quantity) => {
 export const removeFromCart = (productId, size, color) => {
     try {
         const cart = getCart();
-        const filteredCart = cart.filter(
+        const updatedCart = cart.filter(
             item => !(item.id === productId && item.size === size && item.color === color)
         );
-        saveCart(filteredCart);
-        return { success: true, cart: filteredCart };
+
+        const result = saveCart(updatedCart);
+        return { ...result, message: 'Item removed from cart' };
     } catch (error) {
         console.error('Error removing from cart:', error);
-        return { success: false, message: error.message };
+        return { success: false, message: 'Failed to remove item' };
     }
 };
 
 /**
- * Clear cart
+ * Clear entire cart
  */
 export const clearCart = () => {
     try {
         localStorage.removeItem(CART_KEY);
-        return { success: true };
+        return { success: true, message: 'Cart cleared' };
     } catch (error) {
         console.error('Error clearing cart:', error);
-        return { success: false, message: error.message };
+        return { success: false, message: 'Failed to clear cart' };
     }
 };
 
 /**
- * Get cart total
+ * Get cart total - FIXED: Handle invalid prices
  */
 export const getCartTotal = () => {
     const cart = getCart();
-    return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return cart.reduce((total, item) => {
+        const price = Number(item.price) || 0;
+        const quantity = Number(item.quantity) || 0;
+        return total + (price * quantity);
+    }, 0);
 };
 
 /**
@@ -135,16 +502,43 @@ export const getCartTotal = () => {
  */
 export const getCartItemCount = () => {
     const cart = getCart();
-    return cart.reduce((count, item) => count + item.quantity, 0);
+    return cart.reduce((count, item) => count + (Number(item.quantity) || 0), 0);
 };
 
-export default {
-    getCart,
-    saveCart,
-    addToCart,
-    updateCartItemQuantity,
-    removeFromCart,
-    clearCart,
-    getCartTotal,
-    getCartItemCount,
+/**
+ * Check if product is in cart
+ */
+export const isInCart = (productId, size = null, color = null) => {
+    const cart = getCart();
+    return cart.some(
+        item => item.id === productId && item.size === size && item.color === color
+    );
+};
+
+/**
+ * Get specific cart item
+ */
+export const getCartItem = (productId, size = null, color = null) => {
+    const cart = getCart();
+    return cart.find(
+        item => item.id === productId && item.size === size && item.color === color
+    );
+};
+
+/**
+ * DEBUG: Print cart contents
+ */
+export const debugCart = () => {
+    const cart = getCart();
+    console.log('🛒 Cart Debug Info:');
+    console.log('Total items:', cart.length);
+    console.log('Total value:', getCartTotal());
+    cart.forEach((item, index) => {
+        console.log(`Item ${index + 1}:`, {
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+            total: item.price * item.quantity
+        });
+    });
 };

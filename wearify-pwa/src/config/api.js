@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Base URL dari environment variable
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://ta-ppb-eight.vercel.app/api';
 
 // Create axios instance
 const apiClient = axios.create({
