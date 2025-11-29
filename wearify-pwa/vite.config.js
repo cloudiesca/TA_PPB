@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'prompt', // ✅ User control untuk update
+      registerType: 'prompt',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'pwa-192x192.png', 'pwa-512x512.png'],
 
       manifest: {
@@ -45,25 +45,13 @@ export default defineConfig({
             purpose: 'maskable'
           }
         ],
-        categories: ['shopping', 'lifestyle'],
-        screenshots: [
-          {
-            src: '/screenshot1.png',
-            sizes: '540x720',
-            type: 'image/png'
-          }
-        ]
+        categories: ['shopping', 'lifestyle']
       },
 
       workbox: {
-        // ✅ JANGAN gunakan skipWaiting dan clientsClaim
-        // skipWaiting: false,
-        // clientsClaim: false,
-
         globPatterns: ['**/*.{js,css,html,ico,png,svg,json,woff,woff2}'],
 
         runtimeCaching: [
-          // Cache Supabase API
           {
             urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
             handler: 'NetworkFirst',
@@ -71,7 +59,7 @@ export default defineConfig({
               cacheName: 'supabase-api-cache',
               expiration: {
                 maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24, // 24 jam
+                maxAgeSeconds: 60 * 60 * 24,
               },
               cacheableResponse: {
                 statuses: [0, 200]
@@ -79,8 +67,6 @@ export default defineConfig({
               networkTimeoutSeconds: 10
             },
           },
-
-          // Cache Unsplash Images
           {
             urlPattern: /^https:\/\/images\.unsplash\.com\/.*/i,
             handler: 'CacheFirst',
@@ -88,15 +74,13 @@ export default defineConfig({
               cacheName: 'unsplash-images-cache',
               expiration: {
                 maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 hari
+                maxAgeSeconds: 60 * 60 * 24 * 30,
               },
               cacheableResponse: {
                 statuses: [0, 200]
               }
             },
           },
-
-          // Cache Google Fonts
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
             handler: 'CacheFirst',
@@ -104,15 +88,13 @@ export default defineConfig({
               cacheName: 'google-fonts-cache',
               expiration: {
                 maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365, // 1 tahun
+                maxAgeSeconds: 60 * 60 * 24 * 365,
               },
               cacheableResponse: {
                 statuses: [0, 200]
               }
             },
           },
-
-          // Cache Font Files
           {
             urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
             handler: 'CacheFirst',
@@ -120,15 +102,13 @@ export default defineConfig({
               cacheName: 'gstatic-fonts-cache',
               expiration: {
                 maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365, // 1 tahun
+                maxAgeSeconds: 60 * 60 * 24 * 365,
               },
               cacheableResponse: {
                 statuses: [0, 200]
               }
             },
           },
-
-          // Cache other images
           {
             urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/i,
             handler: 'CacheFirst',
@@ -136,12 +116,10 @@ export default defineConfig({
               cacheName: 'images-cache',
               expiration: {
                 maxEntries: 60,
-                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 hari
+                maxAgeSeconds: 60 * 60 * 24 * 30,
               },
             },
           },
-
-          // Cache CSS and JS
           {
             urlPattern: /\.(?:js|css)$/i,
             handler: 'StaleWhileRevalidate',
@@ -149,18 +127,18 @@ export default defineConfig({
               cacheName: 'static-resources',
               expiration: {
                 maxEntries: 60,
-                maxAgeSeconds: 60 * 60 * 24 * 7, // 7 hari
+                maxAgeSeconds: 60 * 60 * 24 * 7,
               },
             },
           },
         ],
 
-        navigateFallback: null, // ✅ Disable untuk avoid loop
+        navigateFallback: null,
         cleanupOutdatedCaches: true,
       },
 
       devOptions: {
-        enabled: true, // Enable PWA di development
+        enabled: true,
         type: 'module',
       },
     }),
@@ -170,8 +148,17 @@ export default defineConfig({
     sourcemap: false,
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom', 'react-router-dom'],
+        manualChunks(id) {
+          // ✅ Dynamic chunking yang lebih aman
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'vendor-react'
+            }
+            if (id.includes('react-router')) {
+              return 'vendor-router'
+            }
+            return 'vendor'
+          }
         },
       },
     },
@@ -179,6 +166,5 @@ export default defineConfig({
 
   server: {
     port: 3000,
-    open: true,
   },
 })
