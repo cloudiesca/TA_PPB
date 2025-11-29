@@ -26,20 +26,36 @@
 
   <!-- Icons -->
   <link rel="icon" href="/favicon.ico" />
-  <link rel="apple-touch-icon" href="/logo192.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/logo192.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 
-  <!-- Manifest -->
-  <link rel="manifest" href="/manifest.json" />
+  <!-- Manifest will be auto-injected by Vite PWA -->
 
   <!-- Preconnect for Performance -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://images.unsplash.com" />
 
   <title>Wearify - Fashion Store</title>
 
   <style>
     /* Critical CSS - Prevent FOUC */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background-color: #ffffff;
+    }
+
     #root {
       min-height: 100vh;
       display: flex;
@@ -54,9 +70,10 @@
       width: 100%;
       height: 100%;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: white;
+      background: #ffffff;
       z-index: 9999;
     }
 
@@ -75,6 +92,13 @@
       }
     }
 
+    .loading-text {
+      margin-top: 16px;
+      color: #6b7280;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
     /* Safe Area for iPhone Notch */
     @supports (padding: max(0px)) {
       body {
@@ -82,25 +106,195 @@
         padding-right: env(safe-area-inset-right);
       }
     }
+
+    /* Update Toast Styles */
+    .update-toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0284c7;
+      color: white;
+      padding: 16px 24px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(2, 132, 199, 0.3);
+      z-index: 9998;
+      display: none;
+      align-items: center;
+      gap: 16px;
+      max-width: 90%;
+      animation: slideUp 0.3s ease-out;
+    }
+
+    .update-toast.show {
+      display: flex;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateX(-50%) translateY(100px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .update-toast-content {
+      flex: 1;
+    }
+
+    .update-toast-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .update-toast-message {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    .update-toast-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .update-btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .update-btn-primary {
+      background: white;
+      color: #0284c7;
+    }
+
+    .update-btn-primary:hover {
+      background: #f0f9ff;
+      transform: scale(1.05);
+    }
+
+    .update-btn-secondary {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+    }
+
+    .update-btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    @media (max-width: 640px) {
+      .update-toast {
+        left: 12px;
+        right: 12px;
+        transform: none;
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(100px);
+          opacity: 0;
+        }
+
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .update-toast-buttons {
+        width: 100%;
+      }
+
+      .update-btn {
+        flex: 1;
+      }
+    }
+
+    /* Offline Indicator */
+    .offline-indicator {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: #ef4444;
+      color: white;
+      padding: 8px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 9997;
+      display: none;
+      animation: slideDown 0.3s ease-out;
+    }
+
+    .offline-indicator.show {
+      display: block;
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-100%);
+      }
+
+      to {
+        transform: translateY(0);
+      }
+    }
   </style>
 </head>
 
 <body>
   <noscript>
-    <div style="padding: 2rem; text-align: center;">
-      <h1>JavaScript Diperlukan</h1>
-      <p>Aktifkan JavaScript di browser Anda untuk menjalankan aplikasi ini.</p>
+    <div style="padding: 2rem; text-align: center; max-width: 600px; margin: 0 auto;">
+      <h1 style="color: #1f2937; margin-bottom: 1rem;">JavaScript Diperlukan</h1>
+      <p style="color: #6b7280; line-height: 1.6;">
+        Aktifkan JavaScript di browser Anda untuk menjalankan aplikasi Wearify.
+        Aplikasi ini memerlukan JavaScript untuk berfungsi dengan baik.
+      </p>
     </div>
   </noscript>
 
   <!-- Loading Spinner -->
   <div class="app-loading" id="loading">
     <div class="spinner"></div>
+    <div class="loading-text">Memuat Wearify...</div>
+  </div>
+
+  <!-- Offline Indicator -->
+  <div class="offline-indicator" id="offlineIndicator">
+    📡 Anda sedang offline. Beberapa fitur mungkin terbatas.
+  </div>
+
+  <!-- Update Toast -->
+  <div class="update-toast" id="updateToast">
+    <div class="update-toast-content">
+      <div class="update-toast-title">🎉 Update Tersedia!</div>
+      <div class="update-toast-message">Versi terbaru Wearify sudah siap.</div>
+    </div>
+    <div class="update-toast-buttons">
+      <button class="update-btn update-btn-primary" onclick="updateApp()">
+        Refresh
+      </button>
+      <button class="update-btn update-btn-secondary" onclick="dismissUpdate()">
+        Nanti
+      </button>
+    </div>
   </div>
 
   <div id="root"></div>
 
-  <!-- Service Worker Registration -->
   <script>
     // Hide loading spinner when app loads
     window.addEventListener('load', () => {
@@ -114,48 +308,82 @@
       }, 500);
     });
 
-    // Service Worker
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker
-          .register('/service-worker.js')
-          .then((registration) => {
-            console.log('✅ Service Worker registered:', registration.scope);
+    // Global functions for update toast
+    window.updateApp = function () {
+      window.location.reload();
+    };
 
-            // Check for updates
-            registration.addEventListener('updatefound', () => {
-              const newWorker = registration.installing;
-              newWorker.addEventListener('statechange', () => {
-                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  // New version available
-                  if (confirm('Update tersedia! Refresh halaman untuk update?')) {
-                    window.location.reload();
-                  }
-                }
-              });
-            });
-          })
-          .catch((error) => {
-            console.log('❌ Service Worker registration failed:', error);
-          });
-      });
+    window.dismissUpdate = function () {
+      const toast = document.getElementById('updateToast');
+      if (toast) {
+        toast.classList.remove('show');
+        sessionStorage.setItem('updateDismissed', Date.now());
+      }
+    };
+
+    // Online/Offline Detection
+    function updateOnlineStatus() {
+      const indicator = document.getElementById('offlineIndicator');
+      if (!navigator.onLine && indicator) {
+        indicator.classList.add('show');
+      } else if (indicator) {
+        indicator.classList.remove('show');
+      }
     }
 
-    // Install prompt
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      // Show install button (you can add this to your UI)
-      console.log('💾 PWA can be installed');
+    window.addEventListener('online', () => {
+      updateOnlineStatus();
+      console.log('🌐 Back online');
     });
 
-    // Track if PWA was launched
+    window.addEventListener('offline', () => {
+      updateOnlineStatus();
+      console.log('📡 Offline mode');
+    });
+
+    // Check initial status
+    updateOnlineStatus();
+
+    // Track PWA launch mode
     if (window.matchMedia('(display-mode: standalone)').matches) {
-      console.log('🚀 Launched as PWA');
+      console.log('🚀 Launched as PWA (standalone mode)');
     }
+
+    // Detect iOS standalone mode
+    if (window.navigator.standalone === true) {
+      console.log('🍎 Launched as PWA (iOS standalone mode)');
+    }
+
+    // Performance monitoring
+    window.addEventListener('load', () => {
+      if ('performance' in window && window.performance.timing) {
+        const perfData = window.performance.timing;
+        const pageLoadTime = perfData.loadEventEnd - perfData.navigationStart;
+        console.log(`⚡ Page load time: ${pageLoadTime}ms`);
+      }
+    });
+
+    // Error handling for failed resource loads
+    window.addEventListener('error', (e) => {
+      if (e.target.tagName === 'IMG') {
+        console.warn('Failed to load image:', e.target.src);
+        // Optionally set a fallback image
+        // e.target.src = '/placeholder-image.png';
+      }
+    }, true);
+
+    // Prevent zoom on double tap (iOS)
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', (e) => {
+      const now = Date.now();
+      if (now - lastTouchEnd <= 300) {
+        e.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, false);
   </script>
 
+  <!-- Vite PWA will auto-inject registerSW script here -->
   <script type="module" src="/src/main.jsx"></script>
 
 </body>
