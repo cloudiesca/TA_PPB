@@ -1,32 +1,160 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 
 <head>
-  <meta charset="UTF-8" />
-  <link rel="icon" href="/favicon.ico" sizes="48x48">
-  <link rel="apple-touch-icon" href="/apple-touch-icon-180x180.png">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+
+  <!-- Viewport dengan safe-area untuk iPhone notch -->
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
+
+  <!-- Theme Color -->
+  <meta name="theme-color" content="#0284c7" />
+  <meta name="msapplication-TileColor" content="#0284c7" />
+
+  <!-- Description -->
+  <meta name="description"
+    content="Wearify - Fashion Store untuk Pria dan Wanita. Belanja fashion online dengan mudah dan aman." />
+  <meta name="keywords" content="fashion, online shopping, baju, celana, dress, jaket, men fashion, women fashion" />
+  <meta name="author" content="Wearify" />
 
   <!-- PWA Meta Tags -->
-  <meta name="theme-color" content="#2563eb" />
-  <meta name="description" content="Modern fashion store for men and women" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Wearify" />
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet">
+  <!-- Icons -->
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" href="/logo192.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo192.png" />
+
+  <!-- Manifest -->
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- Preconnect for Performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://images.unsplash.com" />
 
   <title>Wearify - Fashion Store</title>
+
+  <style>
+    /* Critical CSS - Prevent FOUC */
+    #root {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Loading Spinner */
+    .app-loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      z-index: 9999;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #e5e7eb;
+      border-top-color: #0284c7;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Safe Area for iPhone Notch */
+    @supports (padding: max(0px)) {
+      body {
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <noscript>
+    <div style="padding: 2rem; text-align: center;">
+      <h1>JavaScript Diperlukan</h1>
+      <p>Aktifkan JavaScript di browser Anda untuk menjalankan aplikasi ini.</p>
+    </div>
+  </noscript>
+
+  <!-- Loading Spinner -->
+  <div class="app-loading" id="loading">
+    <div class="spinner"></div>
+  </div>
+
   <div id="root"></div>
-  <script type="module" src="/src/main.jsx"></script>
+
+  <!-- Service Worker Registration -->
+  <script>
+    // Hide loading spinner when app loads
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const loading = document.getElementById('loading');
+        if (loading) {
+          loading.style.opacity = '0';
+          loading.style.transition = 'opacity 0.3s';
+          setTimeout(() => loading.remove(), 300);
+        }
+      }, 500);
+    });
+
+    // Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker
+          .register('/service-worker.js')
+          .then((registration) => {
+            console.log('✅ Service Worker registered:', registration.scope);
+
+            // Check for updates
+            registration.addEventListener('updatefound', () => {
+              const newWorker = registration.installing;
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  // New version available
+                  if (confirm('Update tersedia! Refresh halaman untuk update?')) {
+                    window.location.reload();
+                  }
+                }
+              });
+            });
+          })
+          .catch((error) => {
+            console.log('❌ Service Worker registration failed:', error);
+          });
+      });
+    }
+
+    // Install prompt
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      // Show install button (you can add this to your UI)
+      console.log('💾 PWA can be installed');
+    });
+
+    // Track if PWA was launched
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      console.log('🚀 Launched as PWA');
+    }
+  </script>
 </body>
 
 </html>

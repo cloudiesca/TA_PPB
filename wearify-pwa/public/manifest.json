@@ -1,0 +1,89 @@
+{
+    "name": "Wearify Fashion Store",
+    "short_name": "Wearify",
+    "description": "Fashion Store untuk Pria dan Wanita - Belanja fashion online dengan mudah dan aman",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "display_override": [
+        "window-controls-overlay",
+        "standalone",
+        "minimal-ui"
+    ],
+    "background_color": "#ffffff",
+    "theme_color": "#0284c7",
+    "orientation": "portrait-primary",
+    "dir": "ltr",
+    "lang": "id-ID",
+    "categories": [
+        "shopping",
+        "fashion",
+        "lifestyle"
+    ],
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "/logo192.png",
+            "type": "image/png",
+            "sizes": "192x192",
+            "purpose": "any"
+        },
+        {
+            "src": "/logo192.png",
+            "type": "image/png",
+            "sizes": "192x192",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/logo512.png",
+            "type": "image/png",
+            "sizes": "512x512",
+            "purpose": "any"
+        },
+        {
+            "src": "/logo512.png",
+            "type": "image/png",
+            "sizes": "512x512",
+            "purpose": "maskable"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Men's Fashion",
+            "short_name": "Men",
+            "description": "Browse men's fashion collection",
+            "url": "/?page=men",
+            "icons": [
+                {
+                    "src": "/logo192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        },
+        {
+            "name": "Women's Fashion",
+            "short_name": "Women",
+            "description": "Browse women's fashion collection",
+            "url": "/?page=women",
+            "icons": [
+                {
+                    "src": "/logo192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        },
+        {
+            "name": "Cart",
+            "short_name": "Cart",
+            "description": "View shopping cart",
+            "url": "/?page=cart",
+            "icons": [
+                {
+                    "src": "/logo192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        }
+    ],
+    "screenshots": []
+}

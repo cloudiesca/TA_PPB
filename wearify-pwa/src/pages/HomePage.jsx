@@ -1,4 +1,4 @@
-// src/pages/HomePage.jsx
+// src/pages/HomePage.jsx - FIXED CENTERED BUTTON
 import { useState, useEffect } from "react";
 import { ArrowRight, Truck, Shield, Package } from "lucide-react";
 import ProductCard from "../components/product/ProductCard";
@@ -254,7 +254,7 @@ const HomePage = ({ onNavigate, onProductClick }) => {
         </>
       )}
 
-      {/* Empty State */}
+      {/* Empty State - FIXED: CENTERED BUTTON */}
       {!loading && products.length === 0 && (
         <div style={styles.emptyState}>
           <Package style={styles.emptyIcon} />
@@ -278,18 +278,15 @@ const FeatureCard = ({ icon, title, description }) => (
 );
 
 // ============================================
-// STYLES - Semua styling dipisahkan di bawah
+// STYLES
 // ============================================
 
 const styles = {
-  // Container
   container: {
     minHeight: "100vh",
     backgroundColor: "white",
     paddingTop: "5rem",
   },
-
-  // Hero Section
   heroSection: {
     position: "relative",
     background:
@@ -373,13 +370,11 @@ const styles = {
     paddingTop: "0.5rem",
     flexWrap: "wrap",
   },
-
-  // Buttons
   buttonPrimary: {
     display: "flex",
     alignItems: "center",
     gap: "0.5rem",
-    padding: "0.625rem 1.5rem",
+    padding: "0.75rem 1.5rem",
     backgroundColor: "#0284c7",
     color: "white",
     borderRadius: "0.5rem",
@@ -390,7 +385,7 @@ const styles = {
     transition: "all 0.3s",
   },
   buttonSecondary: {
-    padding: "0.625rem 1.5rem",
+    padding: "0.75rem 1.5rem",
     backgroundColor: "white",
     color: "#334155",
     borderRadius: "0.5rem",
@@ -431,8 +426,6 @@ const styles = {
     width: "1rem",
     height: "1rem",
   },
-
-  // Image Grid
   imageGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(2, 1fr)",
@@ -467,8 +460,6 @@ const styles = {
     objectFit: "cover",
     transition: "transform 0.7s",
   },
-
-  // Features Section
   featuresSection: {
     padding: "2.5rem 0",
     backgroundColor: "white",
@@ -520,8 +511,6 @@ const styles = {
     color: "#475569",
     margin: 0,
   },
-
-  // Loading
   loadingContainer: {
     padding: "5rem 0",
   },
@@ -545,8 +534,6 @@ const styles = {
     fontWeight: "500",
     margin: 0,
   },
-
-  // Sections
   sectionGray: {
     padding: "3rem 0",
     backgroundColor: "#f8fafc",
@@ -582,15 +569,11 @@ const styles = {
     marginBottom: "2rem",
     gap: "0.75rem",
   },
-
-  // Product Grid
   productGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(4, 1fr)",
     gap: "1.25rem",
   },
-
-  // Newsletter
   newsletterSection: {
     padding: "3rem 0",
     background: "linear-gradient(135deg, #0284c7 0%, #2563eb 100%)",
@@ -621,14 +604,14 @@ const styles = {
   },
   newsletterInput: {
     flex: 1,
-    padding: "0.625rem 1rem",
+    padding: "0.75rem 1rem",
     borderRadius: "0.5rem",
     color: "#0f172a",
     border: "none",
     outline: "none",
   },
   newsletterButton: {
-    padding: "0.625rem 1.5rem",
+    padding: "0.75rem 1.5rem",
     backgroundColor: "white",
     color: "#0284c7",
     borderRadius: "0.5rem",
@@ -639,17 +622,20 @@ const styles = {
     transition: "all 0.3s",
     whiteSpace: "nowrap",
   },
-
-  // Empty State
+  // FIXED: CENTER EMPTY STATE
   emptyState: {
     padding: "5rem 0",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
     textAlign: "center",
   },
   emptyIcon: {
     width: "5rem",
     height: "5rem",
     color: "#cbd5e1",
-    margin: "0 auto 1rem",
+    marginBottom: "1rem",
   },
   emptyTitle: {
     fontSize: "1.5rem",
@@ -665,7 +651,7 @@ const styles = {
   },
 };
 
-// Inject keyframes untuk animasi spinner
+// Inject keyframes
 const styleSheet = document.createElement("style");
 styleSheet.textContent = `
   @keyframes spin {

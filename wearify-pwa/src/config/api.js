@@ -1,42 +1,32 @@
 import axios from 'axios';
 
-// Base URL dari environment variable
+// Base URL
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://ta-ppb-eight.vercel.app/api';
 
-// Create axios instance
+// Create Axios Instance
 const apiClient = axios.create({
     baseURL: BASE_URL,
     headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
     },
-    timeout: 10000, // 10 seconds
+    timeout: 10000,
 });
 
-// Request interceptor
+// Request Log
 apiClient.interceptors.request.use(
     (config) => {
-        // Bisa tambah token auth di sini kalau perlu
-        // const token = localStorage.getItem('token');
-        // if (token) {
-        //   config.headers.Authorization = `Bearer ${token}`;
-        // }
+        console.log("API Request:", config.baseURL + config.url);
         return config;
     },
-    (error) => {
-        return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
 );
 
-// Response interceptor
+// Response Handler
 apiClient.interceptors.response.use(
-    (response) => {
-        // Return data directly if success
-        return response.data;
-    },
+    (response) => response.data, // langsung return data
     (error) => {
-        // Handle error responses
-        const errorMessage = error.response?.data?.message || error.message || 'An error occurred';
-        console.error('API Error:', errorMessage);
+        const msg = error.response?.data?.message || error.message;
+        console.error("API Error:", msg);
         return Promise.reject(error.response?.data || error);
     }
 );
