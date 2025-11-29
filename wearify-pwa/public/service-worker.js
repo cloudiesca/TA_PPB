@@ -9,8 +9,8 @@ const STATIC_ASSETS = [
     '/static/js/bundle.js',
     '/static/css/main.css',
     '/manifest.json',
-    '/logo192.png',
-    '/logo512.png'
+    '/pwa-192x192.png.png',
+    '/pwa-512x512.png.png'
 ];
 
 // Install event - cache static assets
