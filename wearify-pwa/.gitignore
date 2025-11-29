@@ -8,7 +8,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-dist
+# dist <-- COMMENT ATAU HAPUS BARIS INI
 dist-ssr
 *.local
 
@@ -27,3 +27,6 @@ dist-ssr
 .env
 .env.local
 .env.production
+
+# Vercel
+.vercel

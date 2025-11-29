@@ -1,18 +1,57 @@
 {
     "version": 2,
-    "builds": [
+    "buildCommand": "npm run build",
+    "outputDirectory": "dist",
+    "rewrites": [
         {
-            "src": "package.json",
-            "use": "@vercel/static-build",
-            "config": {
-                "distDir": "dist"
-            }
+            "source": "/(.*)",
+            "destination": "/index.html"
+        }
+    ],
+    "headers": [
+        {
+            "source": "/registerSW.js",
+            "headers": [
+                {
+                    "key": "Content-Type",
+                    "value": "application/javascript"
+                },
+                {
+                    "key": "Service-Worker-Allowed",
+                    "value": "/"
+                }
+            ]
+        },
+        {
+            "source": "/sw.js",
+            "headers": [
+                {
+                    "key": "Content-Type",
+                    "value": "application/javascript"
+                },
+                {
+                    "key": "Service-Worker-Allowed",
+                    "value": "/"
+                }
+            ]
+        },
+        {
+            "source": "/manifest.json",
+            "headers": [
+                {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                }
+            ]
         }
     ],
     "routes": [
         {
-            "src": "/(.*)",
-            "dest": "/index.html"
+            "src": "/registerSW.js",
+            "dest": "/registerSW.js",
+            "headers": {
+                "Cache-Control": "public, max-age=0, must-revalidate"
+            }
         }
     ]
 }
