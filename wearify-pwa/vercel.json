@@ -44,14 +44,5 @@
                 }
             ]
         }
-    ],
-    "routes": [
-        {
-            "src": "/registerSW.js",
-            "dest": "/registerSW.js",
-            "headers": {
-                "Cache-Control": "public, max-age=0, must-revalidate"
-            }
-        }
     ]
 }
